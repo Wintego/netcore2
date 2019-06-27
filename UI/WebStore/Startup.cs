@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebStore.Infrastructure.Implementations;
-using WebStore.Infrastructure.Interfaces;
-using WebStore.Infrastructure.Implementations;
-using WebStore.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,9 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using WebStore.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using WebStore.Data;
 using WebStore.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using WebStore.Interfaces.Services;
+using WebStore.Services;
+using WebStore.Services.Data;
 
 namespace WebStore
 {
