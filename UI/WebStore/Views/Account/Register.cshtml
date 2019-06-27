@@ -1,0 +1,26 @@
+﻿@model RegisterUserViewModel
+
+@{
+    ViewData["Title"] = "Регистрация нового пользователя";
+}
+
+<section id="form">
+    <!--form-->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="signup-form">
+                    <!--sign up form-->
+                    <h2>New User Signup!</h2>
+                    <form method="post" asp-controller="Account" asp-action="Register" asp-antiforgery="true">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input asp-for="UserName" type="text" placeholder="@nameof(Model.UserName)" />
+                        <input asp-for="Password" type="password" placeholder="@nameof(Model.Password)" />
+                        <input asp-for="ConfirmPassword" type="password" placeholder="@nameof(Model.ConfirmPassword)" />
+                        <button type="submit" class="btn btn-default">Signup</button>
+                    </form>
+                </div><!--/sign up form-->
+            </div>
+        </div>
+    </div>
+</section><!--/form-->
