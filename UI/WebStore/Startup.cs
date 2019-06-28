@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using WebStore.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using WebStore.Clients.Values;
+using WebStore.Interfaces.Api;
 using WebStore.Interfaces.Services;
 using WebStore.Services;
 using WebStore.Services.Data;
@@ -35,6 +37,9 @@ namespace WebStore
             services.AddScoped<ICartService, CookieCartService>();
             services.AddScoped<IOrderService, SqlOrderService>();
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<WebStoreContext>().AddDefaultTokenProviders();
+
+            services.AddTransient<IValuesService, ValuesClient>();
+
             services.Configure<IdentityOptions>(cfg => {
                 cfg.Password.RequiredLength = 5;
                 cfg.Password.RequireDigit = false;
@@ -68,6 +73,7 @@ namespace WebStore
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             app.UseStaticFiles();
             app.UseDefaultFiles();
