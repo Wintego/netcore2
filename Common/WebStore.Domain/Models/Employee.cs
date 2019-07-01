@@ -18,6 +18,6 @@ namespace WebStore.Domain.Models
         public string Patronymic { get; set; }
         [Display(Name="Возраст")]
         [Range(18,50, ErrorMessage = "Возраст должен быть от 18 до 50")]
-        public int Age { get; set; }
+        public int Age { get; set; }//
     }
 }
