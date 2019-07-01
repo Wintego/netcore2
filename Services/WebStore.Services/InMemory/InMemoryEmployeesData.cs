@@ -26,5 +26,16 @@ namespace WebStore.Services
         public IEnumerable<Employee> GetAll() => Employees;
         public Employee GetById(int id) => Employees.FirstOrDefault(e => e.Id == id);
         public void Save() { }
+        public Employee Update(int id, Employee employee)
+        {
+            if (employee is null) throw new ArgumentNullException(nameof(employee));
+            var db_employee = GetById(id);
+            if (db_employee is null) throw new InvalidOperationException($"сотрудник с id={id} не найден");
+            db_employee.FirstName = employee.FirstName;
+            db_employee.SurName = employee.SurName;
+            db_employee.Age = employee.Age;
+            db_employee.Patronymic = db_employee.Patronymic;
+            return db_employee;
+        }
     }
 }

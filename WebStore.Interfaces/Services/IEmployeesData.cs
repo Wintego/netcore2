@@ -10,6 +10,6 @@ namespace WebStore.Interfaces.Services
         void AddNew(Employee employee);
         void Delete(int id);
         void Save();
-
+        Employee Update(int id, Employee employee);
     }
 }
