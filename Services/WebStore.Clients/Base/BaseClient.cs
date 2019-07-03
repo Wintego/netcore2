@@ -48,6 +48,6 @@ namespace WebStore.Clients.Base
         {
             return await _client.DeleteAsync(url, Cancel);
         }
-        protected HttpResponseMessage Delete(string url) => DeleteAsync(url).Result;
+        protected HttpResponseMessage Delete(string url) => DeleteAsync(url).Result;//
     }
 }
