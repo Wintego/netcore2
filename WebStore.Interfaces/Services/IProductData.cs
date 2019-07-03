@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using WebStore.Domain.DTO.Product;
 using WebStore.Domain.Entities;
 
 namespace WebStore.Interfaces.Services
@@ -7,8 +8,7 @@ namespace WebStore.Interfaces.Services
     {
         IEnumerable<Section> GetSections();
         IEnumerable<Brand> GetBrands();
-        IEnumerable<Product> GetProducts(ProductFilter filter);
-
-        Product GetProductById(int id);
+        IEnumerable<ProductDTO> GetProducts(ProductFilter filter);
+        ProductDTO GetProductById(int id);
     }
 }

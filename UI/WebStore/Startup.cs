@@ -16,6 +16,8 @@ using WebStore.Interfaces.Api;
 using WebStore.Interfaces.Services;
 using WebStore.Services;
 using WebStore.Services.Data;
+using WebStore.Services.Sql;
+using WebStore.Clients.Orders;
 
 namespace WebStore
 {
@@ -35,7 +37,8 @@ namespace WebStore
             services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
             services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<ICartService, CookieCartService>();
-            services.AddScoped<IOrderService, SqlOrderService>();
+            //services.AddScoped<IOrderService, SqlOrdersService>();
+            services.AddScoped<IOrderService, OrdersClient>();
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<WebStoreContext>().AddDefaultTokenProviders();
 
             services.AddTransient<IValuesService, ValuesClient>();

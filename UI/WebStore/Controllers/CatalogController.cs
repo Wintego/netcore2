@@ -25,12 +25,24 @@ namespace WebStore.Controllers
                 SectionId = SectionId,
                 BrandId = BrandId
             });
+
             var catalog_model = new CatalogViewModel
             {
                 BrandId = BrandId,
                 SectionId = SectionId,
-                Products = products.Select(ProductViewModelMapper.CreateViewModel)
+                Products = products
+                   .Select(p => new ProductViewModel
+                   {
+                       Id = p.Id,
+                       Name = p.Name,
+                       Brand = p.Brand?.Name,
+                       Order = p.Order,
+                       Price = p.Price,
+                       ImageUrl = p.ImageUrl
+                   })
+                //.Select(ProductViewModelMapper.CreateViewModel)
             };
+
             return View(catalog_model);
         }
         public IActionResult ProductDetails(int id)
@@ -39,7 +51,7 @@ namespace WebStore.Controllers
             if (product is null) return NotFound();
             return View(new ProductViewModel
             {
-                Id =product.Id,
+                Id = product.Id,
                 Name = product.Name,
                 Price = product.Price,
                 Order = product.Order,

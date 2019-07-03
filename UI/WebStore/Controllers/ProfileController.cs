@@ -12,27 +12,24 @@ namespace WebStore.Controllers
     [Authorize]
     public class ProfileController : Controller
     {
-        private readonly IOrderService orderService;
-
-        public ProfileController(IOrderService orderService)
+        private readonly IOrderService _OrderService;
+        public ProfileController(IOrderService OrderService)
         {
-            this.orderService = orderService;
+            _OrderService = OrderService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public IActionResult Index() => View();
         public IActionResult Orders()
         {
-            var orders = orderService.GetUserOrders(User.Identity.Name);
-            return View(orders.Select(o => new UserOrderViewModel
+            var orders = _OrderService.GetUserOrders(User.Identity.Name);
+
+            return View(orders.Select(order => new UserOrderViewModel
             {
-                Id = o.Id,
-                Name = o.Name,
-                Adress = o.Adress,
-                Phone = o.Phone,
-                TotalSum = o.OrderItems.Sum(or => or.Quantity * or.Price)
+                Id = order.Id,
+                Name = order.Name,
+                Adress = order.Address,
+                Phone = order.Phone,
+                TotalSum = order.OrderItem.Sum(o => o.Quantity * o.Price)
             }));
         }
     }
