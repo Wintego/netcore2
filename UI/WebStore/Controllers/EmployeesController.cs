@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebStore.Infrastructure.Interfaces;
-using WebStore.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using WebStore.Domain.Models;
+using WebStore.Interfaces.Services;
 
 namespace WebStore.Controllers
 {

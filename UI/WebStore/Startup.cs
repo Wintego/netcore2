@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebStore.Infrastructure.Implementations;
-using WebStore.Infrastructure.Interfaces;
-using WebStore.Infrastructure.Implementations;
-using WebStore.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,9 +9,15 @@ using Microsoft.Extensions.DependencyInjection;
 using WebStore.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using WebStore.Data;
 using WebStore.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using WebStore.Clients.Values;
+using WebStore.Interfaces.Api;
+using WebStore.Interfaces.Services;
+using WebStore.Services;
+using WebStore.Services.Data;
+using WebStore.Services.Sql;
+using WebStore.Clients.Orders;
 
 namespace WebStore
 {
@@ -35,8 +37,12 @@ namespace WebStore
             services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
             services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<ICartService, CookieCartService>();
-            services.AddScoped<IOrderService, SqlOrderService>();
+            //services.AddScoped<IOrderService, SqlOrdersService>();
+            services.AddScoped<IOrderService, OrdersClient>();
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<WebStoreContext>().AddDefaultTokenProviders();
+
+            services.AddTransient<IValuesService, ValuesClient>();
+
             services.Configure<IdentityOptions>(cfg => {
                 cfg.Password.RequiredLength = 5;
                 cfg.Password.RequireDigit = false;
@@ -70,6 +76,7 @@ namespace WebStore
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             app.UseStaticFiles();
             app.UseDefaultFiles();
