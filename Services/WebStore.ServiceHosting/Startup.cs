@@ -29,11 +29,11 @@ namespace WebStore.ServiceHosting
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConection")));
-            services.AddTransient<WebStoreContextInitializer>();
+            //services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConection")));
+            //services.AddTransient<WebStoreContextInitializer>();
 
             services.AddIdentity<User, IdentityRole>()
-               .AddEntityFrameworkStores<WebStoreContext>()
+               //.AddEntityFrameworkStores<WebStoreContext>()
                .AddDefaultTokenProviders();
 
             services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace WebStore.Clients.Base
 {
-    public abstract class BaseClient
+    public abstract class BaseClient : IDisposable
     {
         public readonly HttpClient _client;
 
@@ -49,5 +49,10 @@ namespace WebStore.Clients.Base
             return await _client.DeleteAsync(url, Cancel);
         }
         protected HttpResponseMessage Delete(string url) => DeleteAsync(url).Result;//
+
+        public void Dispose()
+        {
+            _client.Dispose();
+        }
     }
 }

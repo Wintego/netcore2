@@ -4,7 +4,7 @@ namespace WebStore.Domain.Identity
 {
     public class ReplaceClaimDTO : UserInfoDTO
     {
-        public Claim OldClain { get; set; }
+        public Claim OldClaim { get; set; }
         public Claim NewClaim { get; set; }
     }
     
