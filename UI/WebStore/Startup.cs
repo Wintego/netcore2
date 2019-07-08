@@ -44,17 +44,17 @@ namespace WebStore
 
             services.AddTransient<IValuesService, ValuesClient>();
 
-            /*
-             
-            IUserRoleStore<User>,   
-            IUserClaimStore<User>, 
-            IUserPasswordStore<User>, 
-            IUserTwoFactorStore<User>, 
-            IUserEmailStore<User>, 
-            IUserPhoneNumberStore<User>, 
-            IUserLoginStore<User>, 
-            IUserLockoutStore<User> 
-             */
+            services.AddTransient<IUserStore<User>, UsersClient>();
+            services.AddTransient<IUserRoleStore<User>, UsersClient>();
+            services.AddTransient<IUserClaimStore<User>, UsersClient>();
+            services.AddTransient<IUserPasswordStore<User>, UsersClient>();
+            services.AddTransient<IUserTwoFactorStore<User>, UsersClient>();
+            services.AddTransient<IUserEmailStore<User>, UsersClient>();
+            services.AddTransient<IUserPhoneNumberStore<User>, UsersClient>();
+            services.AddTransient<IUserLoginStore<User>, UsersClient>();
+            services.AddTransient<IUserLockoutStore<User>, UsersClient>();
+
+            services.AddTransient<IRoleStore<IdentityRole>, RolesClient>();
 
             services.AddIdentity<User, IdentityRole>(options =>
             {
