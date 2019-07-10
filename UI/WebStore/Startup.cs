@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebStore.Infrastructure.Implementations;
-using WebStore.Infrastructure.Interfaces;
-using WebStore.Infrastructure.Implementations;
-using WebStore.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,9 +9,21 @@ using Microsoft.Extensions.DependencyInjection;
 using WebStore.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using WebStore.Data;
 using WebStore.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using WebStore.Clients.Values;
+using WebStore.Interfaces.Api;
+using WebStore.Interfaces.Services;
+using WebStore.Services;
+using WebStore.Services.Data;
+using WebStore.Services.Sql;
+using WebStore.Clients.Orders;
+using WebStore.Clients.Users;
+using WebStore.Clients.Employees;
+using WebStore.Clients.Products;
+using WebStore.Infrastructure.Middleware;
+using WebStore.Logger;
 
 namespace WebStore
 {
@@ -29,14 +37,51 @@ namespace WebStore
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddTransient<WebStoreContextInitializer>();
+            //services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConection")));
+            //services.AddTransient<WebStoreContextInitializer>();
 
-            services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
-            services.AddScoped<IProductData, SqlProductData>();
+            services.AddSingleton<IEmployeesData, EmployeesClient>();
+            services.AddScoped<IProductData, ProductsClient>();
             services.AddScoped<ICartService, CookieCartService>();
-            services.AddScoped<IOrderService, SqlOrderService>();
-            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<WebStoreContext>().AddDefaultTokenProviders();
+            services.AddScoped<IOrderService, OrdersClient>();
+
+            services.AddTransient<IValuesService, ValuesClient>();
+
+            services.AddTransient<IUserStore<User>, UsersClient>();
+            services.AddTransient<IUserRoleStore<User>, UsersClient>();
+            services.AddTransient<IUserClaimStore<User>, UsersClient>();
+            services.AddTransient<IUserPasswordStore<User>, UsersClient>();
+            services.AddTransient<IUserTwoFactorStore<User>, UsersClient>();
+            services.AddTransient<IUserEmailStore<User>, UsersClient>();
+            services.AddTransient<IUserPhoneNumberStore<User>, UsersClient>();
+            services.AddTransient<IUserLoginStore<User>, UsersClient>();
+            services.AddTransient<IUserLockoutStore<User>, UsersClient>();
+
+            services.AddTransient<IRoleStore<IdentityRole>, RolesClient>();
+
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                // конфигурация cookies возможна здесь
+            })
+                //.AddEntityFrameworkStores<WebStoreContext>()
+                .AddDefaultTokenProviders();
+
+            #region Identity - собственная реализация хранилищ данных на основе WebAPI
+
+            services.AddTransient<IUserStore<User>, UsersClient>();
+            services.AddTransient<IUserRoleStore<User>, UsersClient>();
+            services.AddTransient<IUserClaimStore<User>, UsersClient>();
+            services.AddTransient<IUserPasswordStore<User>, UsersClient>();
+            services.AddTransient<IUserTwoFactorStore<User>, UsersClient>();
+            services.AddTransient<IUserEmailStore<User>, UsersClient>();
+            services.AddTransient<IUserPhoneNumberStore<User>, UsersClient>();
+            services.AddTransient<IUserLoginStore<User>, UsersClient>();
+            services.AddTransient<IUserLockoutStore<User>, UsersClient>();
+
+            services.AddTransient<IRoleStore<IdentityRole>, RolesClient>();
+
+            #endregion
+
             services.Configure<IdentityOptions>(cfg => {
                 cfg.Password.RequiredLength = 5;
                 cfg.Password.RequireDigit = false;
@@ -64,16 +109,19 @@ namespace WebStore
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, WebStoreContextInitializer db)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory log)
         {
-            db.InitializeAsync().Wait();
+            log.AddLog4Net();
+            //db.InitializeAsync().Wait();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             app.UseStaticFiles();
             app.UseDefaultFiles();
             app.UseAuthentication();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseMvc(route =>
             {
                 route.MapRoute(
