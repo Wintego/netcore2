@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using WebStore.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using WebStore.Clients.Values;
 using WebStore.Interfaces.Api;
 using WebStore.Interfaces.Services;
@@ -21,6 +22,8 @@ using WebStore.Clients.Orders;
 using WebStore.Clients.Users;
 using WebStore.Clients.Employees;
 using WebStore.Clients.Products;
+using WebStore.Infrastructure.Middleware;
+using WebStore.Logger;
 
 namespace WebStore
 {
@@ -106,8 +109,9 @@ namespace WebStore
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env/*, WebStoreContextInitializer db*/)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory log)
         {
+            log.AddLog4Net();
             //db.InitializeAsync().Wait();
             if (env.IsDevelopment())
             {
@@ -117,6 +121,7 @@ namespace WebStore
             app.UseStaticFiles();
             app.UseDefaultFiles();
             app.UseAuthentication();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseMvc(route =>
             {
                 route.MapRoute(

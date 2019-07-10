@@ -16,6 +16,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using WebStore.DAL.Context;
 using WebStore.Domain.Entities;
 using WebStore.Interfaces.Services;
+using WebStore.Logger;
 using WebStore.Services;
 using WebStore.Services.Data;
 using WebStore.Services.Sql;
@@ -52,8 +53,9 @@ namespace WebStore.ServiceHosting
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, WebStoreContextInitializer db)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, WebStoreContextInitializer db, ILoggerFactory log)
         {
+            log.AddLog4Net();
             db.InitializeAsync().Wait();
 
             if (env.IsDevelopment())
