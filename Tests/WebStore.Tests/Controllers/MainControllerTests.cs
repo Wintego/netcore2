@@ -14,10 +14,7 @@ namespace WebStore.Tests.Controllers
         private MainController controller;
 
         [TestInitialize]
-        public void Initialize()
-        {
-            controller = new MainController();
-        }
+        public void Initialize() => controller = new MainController();
 
         [TestMethod]
         public void Index_Returns_View()
