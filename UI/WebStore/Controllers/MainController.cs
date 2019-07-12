@@ -10,9 +10,19 @@ namespace WebStore.Controllers
     {
         public IActionResult Index() => View();
         public IActionResult ContactUs() => View();
-        public IActionResult Checkout() => View();
+        //public IActionResult Checkout() => View();
         public IActionResult BlogSingle() => View();
         public IActionResult Blog() => View();
         public IActionResult NotFound() => View();
+
+        public IActionResult ErrorStatusCode(string id)
+        {
+            switch (id)
+            {
+                case "404": return RedirectToAction(nameof(NotFound));
+                default: return Content($"Ошибка {id}");
+            }
+                     
+        }
     }
 }
