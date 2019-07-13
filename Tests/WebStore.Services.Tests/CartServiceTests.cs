@@ -130,7 +130,7 @@ namespace WebStore.Services.Tests
 
             Assert.Empty(cart.Items);
         }
-
+        [TestMethod]
         public void CartService_Decrement_Correct()
         {
             const int item_id = 1;
@@ -234,6 +234,30 @@ namespace WebStore.Services.Tests
 
             Assert.Equal(6, result.ItemsCount);
             Assert.Equal(1.1m, result.Items.First().Key.Price);
+        }
+        [TestMethod]
+        public void CartService_RemoveAll()
+        {
+            var cart = new Cart
+            {
+                Items = new List<CartItem>
+                {
+                    new CartItem{ ProductId = 1, Quantity = 1 },
+                    new CartItem { ProductId = 2, Quantity = 5 }
+                }
+            };
+
+            var product_data_mock = new Mock<IProductData>();
+            var cart_store_mock = new Mock<ICartStore>();
+            cart_store_mock
+               .Setup(c => c.Cart)
+               .Returns(cart);
+
+            var cart_service = new CartService(product_data_mock.Object, cart_store_mock.Object);
+
+            cart_service.RemoveAll();
+
+            Assert.Equal(0, cart.ItemsCount);
         }
     }
 }
