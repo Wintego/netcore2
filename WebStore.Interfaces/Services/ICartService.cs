@@ -9,6 +9,5 @@ namespace WebStore.Interfaces.Services
         void RemoveAll();
         void AddToCart(int id);
         CartViewModel TransFromCart();
-        void TransformCart();
     }
 }
