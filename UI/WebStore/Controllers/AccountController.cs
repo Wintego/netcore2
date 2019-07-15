@@ -46,9 +46,7 @@ namespace WebStore.Controllers
                     ModelState.AddModelError("", error.Description);
                 logger.LogWarning($"Ошибка при регистрации пользователя {model.UserName}: " +
                                   $"{string.Join(",", creation_result.Errors.Select(e=>e.Description))}");
-            }
-            
-            
+            }  
             return View(model);
         }
 
