@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebStore.Domain.ViewModels.Product;
 using WebStore.Infrastructure.Map;
-using WebStore.Interfaces.Services;
+using WebStore.Interfaces.Services; 
 
 namespace WebStore.Components
 {
@@ -16,16 +16,19 @@ namespace WebStore.Components
         {
             _ProductData = productData;
         }
-        public IViewComponentResult Invoke()
+        public IViewComponentResult Invoke(string BrandId)
         {
-            var brand = GetBrands();
-            return View(brand);
+            var brand_id = int.TryParse(BrandId, out var id) ? id : (int?) null;
+            return View(new BrandCompleteViewModel {
+                Brands = GetBrands(),
+                CurrentBrandId = brand_id
+            });
         }
 
         private IEnumerable<BrandViewModel> GetBrands()
         {
             var brands = _ProductData.GetBrands();
-            return brands.Select(brand => brand.CreateViewModel());
+            return brands.Select(BrandViewModelMapper.CreateViewModel);
         }
     }
 }

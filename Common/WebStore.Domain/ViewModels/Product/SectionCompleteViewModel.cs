@@ -10,4 +10,9 @@ namespace WebStore.Domain.ViewModels.Product
         public int? CurrentParentSection { get; set; }
         public int? CurrentSectionId { get; set; }
     }
+    public class BrandCompleteViewModel
+    {
+        public IEnumerable<BrandViewModel> Brands { get; set; }
+        public int? CurrentBrandId { get; set; }
+    }
 }
