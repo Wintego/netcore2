@@ -2521,7 +2521,9 @@ h2.title {
 }
 
 
-
+.panel-body ul li.active {
+    text-decoration: underline;
+}
 @charset "UTF-8";
 /*
 Animate.css - http://daneden.me/animate
