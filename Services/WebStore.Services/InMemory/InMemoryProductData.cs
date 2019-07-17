@@ -69,5 +69,15 @@ namespace WebStore.Services.InMemory
                     }
             };
         }
+
+        public Section GetSectionById(int id)
+        {
+            return TestData.Sections.FirstOrDefault(s => s.Id == id);
+        }
+
+        public Brand GetBrandById(int id)
+        {
+            return TestData.Brands.FirstOrDefault(b => b.Id == id);
+        }
     }
 }
