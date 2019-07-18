@@ -86,7 +86,14 @@ namespace WebStore.Services.Sql
                     {
                         Id = p.Brand.Id,
                         Name = p.Brand.Name
-                    }
+                    },
+                Section = p.Section is null
+                   ? null
+                   : new SectionDTO
+                   {
+                       Id = p.SectionId,
+                       Name = p.Section.Name
+                   }
             };
         }
 
