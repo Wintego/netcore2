@@ -89,9 +89,9 @@ namespace WebStore.Services
 
             return new CartViewModel
             {
-                Items = _CartStore.Cart.Items.ToDictionary(
-                    x => products_view_models.First(p => p.Id == x.ProductId),
-                    x => x.Quantity)
+                //Items = _CartStore.Cart.Items.ToDictionary(
+                //    x => products_view_models.First(p => p.Id == x.ProductId),
+                //    x => x.Quantity)
             };
         }
     }
