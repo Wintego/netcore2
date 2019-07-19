@@ -5,6 +5,7 @@ using WebStore.DAL.Context;
 using WebStore.Domain.DTO.Product;
 using WebStore.Domain.Entities;
 using WebStore.Interfaces.Services;
+using WebStore.Services.Map;
 
 namespace WebStore.Services.Sql
 {
@@ -15,96 +16,44 @@ namespace WebStore.Services.Sql
         public SqlProductData(WebStoreContext DB) => _db = DB;
 
         public IEnumerable<Section> GetSections() => _db.Sections
-            //.Include(s => s.Products)
             .AsEnumerable();
 
         public IEnumerable<Brand> GetBrands() => _db.Brands
-            //.Include(brand => brand.Products)
             .AsEnumerable();
 
-        public IEnumerable<ProductDTO> GetProducts(ProductFilter Filter)
+        public Section GetSectionById(int id) => _db.Sections.FirstOrDefault(s => s.Id == id);
+
+        public Brand GetBrandById(int id) => _db.Brands.FirstOrDefault(b => b.Id == id);
+
+        public PagedProductsDTO GetProducts(ProductFilter Filter)
         {
             IQueryable<Product> products = _db.Products;
-            if (Filter is null)
-                return products
-                   .AsEnumerable()
-                   .Select(p => new ProductDTO
-                   {
-                       Id = p.Id,
-                       Name = p.Name,
-                       Order = p.Order,
-                       Price = p.Price,
-                       ImageUrl = p.ImageUrl,
-                       Brand = p.Brand is null
-                        ? null
-                        : new BrandDTO
-                        {
-                            Id = p.Brand.Id,
-                            Name = p.Brand.Name
-                        }
-                   });
 
-            if (Filter.SectionId != null)
+            if (Filter?.SectionId != null)
                 products = products.Where(product => product.SectionId == Filter.SectionId);
 
-            if (Filter.BrandId != null)
+            if (Filter?.BrandId != null)
                 products = products.Where(product => product.BrandId == Filter.BrandId);
 
-            return products.AsEnumerable().Select(p => new ProductDTO
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Order = p.Order,
-                Price = p.Price,
-                ImageUrl = p.ImageUrl,
-                Brand = p.Brand is null
-                    ? null
-                    : new BrandDTO
-                    {
-                        Id = p.Brand.Id,
-                        Name = p.Brand.Name
-                    }
-            });
-        }
+            var total_count = products.Count();
 
-        public ProductDTO GetProductById(int id)
-        {
-            var p = _db.Products
-               .Include(product => product.Brand)
-               .Include(product => product.Section)
-               .FirstOrDefault(product => product.Id == id);
-            return p is null ? null : new ProductDTO
+            if (Filter?.PageSize != null)
+                products = products
+                   .Skip((Filter.Page - 1) * (int)Filter.PageSize)
+                   .Take((int)Filter.PageSize);
+
+            return new PagedProductsDTO
             {
-                Id = p.Id,
-                Name = p.Name,
-                Order = p.Order,
-                Price = p.Price,
-                ImageUrl = p.ImageUrl,
-                Brand = p.Brand is null
-                    ? null
-                    : new BrandDTO
-                    {
-                        Id = p.Brand.Id,
-                        Name = p.Brand.Name
-                    },
-                Section = p.Section is null
-                   ? null
-                   : new SectionDTO
-                   {
-                       Id = p.SectionId,
-                       Name = p.Section.Name
-                   }
+                Products = products.AsEnumerable().ToDTO(),
+                TotalCount = total_count
             };
         }
 
-        public Section GetSectionById(int id)
-        {
-            return _db.Sections.FirstOrDefault(s => s.Id == id);
-        }
-
-        public Brand GetBrandById(int id)
-        {
-            return _db.Brands.FirstOrDefault(s => s.Id == id);
-        }
+        public ProductDTO GetProductById(int id) =>
+            _db.Products
+               .Include(product => product.Brand)
+               .Include(product => product.Section)
+               .FirstOrDefault(product => product.Id == id)
+               .ToDTO();
     }
 }
