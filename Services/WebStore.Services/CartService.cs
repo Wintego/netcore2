@@ -71,10 +71,11 @@ namespace WebStore.Services
 
         public CartViewModel TransFromCart()
         {
-            var products = _ProductData.GetProducts(new ProductFilter
-            {
-                Ids = _CartStore.Cart.Items.Select(item => item.ProductId).ToList()
-            });
+            var products = _ProductData.GetProducts(new ProductFilter());
+            //var products = _ProductData.GetProducts(new ProductFilter
+            //{
+            //    Ids = _CartStore.Cart.Items.Select(item => item.ProductId).ToList()               
+            //});
 
             var products_view_models = products.Select(p => new ProductViewModel
             {

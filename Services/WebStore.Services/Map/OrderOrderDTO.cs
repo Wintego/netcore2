@@ -34,5 +34,9 @@ namespace WebStore.Services.Map
         public static OrderDTO ToDTO(this Order item) => item?.CopyTo(new OrderDTO());
 
         public static Order ToOrder(this OrderDTO dto) => dto?.CopyTo(new Order());
+        public static IEnumerable<OrderDTO> ToDTO(this IEnumerable<Order> Orders)
+        {
+            return Orders.Select(ToDTO);
+        }
     }
 }

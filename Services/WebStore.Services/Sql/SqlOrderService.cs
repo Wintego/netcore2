@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebStore.DAL.Context;
 using WebStore.Domain.DTO.Order;
+using WebStore.Domain.DTO.Product;
 using WebStore.Domain.Entities;
 using WebStore.Domain.ViewModels.Cart;
 using WebStore.Domain.ViewModels.Order;
 using WebStore.Interfaces.Services;
+using WebStore.Services.Map;
 
 namespace WebStore.Services
 {
@@ -25,41 +27,17 @@ namespace WebStore.Services
 
         public IEnumerable<OrderDTO> GetUserOrders(string UserName) =>
             _db.Orders
-                .Include(order => order.User)
-                .Include(order => order.OrderItems)
-                .Where(order => order.User.UserName == UserName)
-               .Select(o => new OrderDTO
-               {
-                   Address = o.Adress,
-                   Phone = o.Phone,
-                   Date = o.Date,
-                   OrderItem = o.OrderItems.Select(item => new OrderItemDTO
-                   {
-                       Id = item.Id,
-                       Price = item.Price,
-                       Quantity = item.Quantity
-                   }).ToArray()
-               })
-                .ToArray();
+               .Include(order => order.User)
+               .Include(order => order.OrderItems)
+               .Where(order => order.User.UserName == UserName)
+               .AsEnumerable()
+               .ToDTO();
 
-        public OrderDTO GetOrderById(int id)
-        {
-            var order = _db.Orders
+        public OrderDTO GetOrderById(int id) =>
+            _db.Orders
                .Include(o => o.OrderItems)
-               .FirstOrDefault(o => o.Id == id);
-            return order is null ? null : new OrderDTO
-            {
-                Address = order.Adress,
-                Phone = order.Phone,
-                Date = order.Date,
-                OrderItem = order.OrderItems.Select(i => new OrderItemDTO
-                {
-                    Id = i.Id,
-                    Price = i.Price,
-                    Quantity = i.Quantity
-                }).ToArray()
-            };
-        }
+               .FirstOrDefault(o => o.Id == id)
+               .ToDTO();
 
         public OrderDTO CreateOrder(CreateOrderModel OrderModel, string UserName)
         {
@@ -102,20 +80,7 @@ namespace WebStore.Services
                 _db.SaveChanges();
                 transaction.Commit();
 
-                return new OrderDTO
-                {
-                    Id = order.Id,
-                    Name = order.Name,
-                    Address = order.Adress,
-                    Phone = order.Phone,
-                    Date = order.Date,
-                    OrderItem = order.OrderItems.Select(i => new OrderItemDTO
-                    {
-                        Id = i.Id,
-                        Price = i.Price,
-                        Quantity = i.Quantity
-                    }).ToArray()
-                };
+                return order.ToDTO();
             }
         }
     }

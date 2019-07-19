@@ -20,6 +20,7 @@ using WebStore.Logger;
 using WebStore.Services;
 using WebStore.Services.Data;
 using WebStore.Services.Sql;
+using SqlProductData = WebStore.Services.Sql.SqlProductData;
 
 namespace WebStore.ServiceHosting
 {

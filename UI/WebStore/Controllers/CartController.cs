@@ -77,5 +77,12 @@ namespace WebStore.Controllers
             ViewBag.OrderId = id;
             return View();
         }
+        #region AjaxApi
+        public IActionResult AddToCartApi(int id)
+        {
+            cartService.AddToCart(id);
+            return Json(new { id, message = $"Товар {id} добавлен в корзину" } );
+        }
+        #endregion
     }
 }

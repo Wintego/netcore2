@@ -16,9 +16,9 @@
                         <img src="~/images/shop/@product.ImageUrl" alt="@product.Name" />
                         <h2>@product.Price.ToString("C")</h2>
                         <p>@product.Name</p>
-                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@product.Id"
-                           class="btn btn-default add-to-cart">
-                            <i class="fa fa-shopping-cart"></i>Добавить в корзину
+                        <a href="#" data-id="@product.Id"
+                           class="btn btn-default add-to-cart CallAddToCart">
+                            <i class="fa fa-shopping-cart"></i>В корзину
                         </a>
                     </div>
                     <div class="product-overlay">
