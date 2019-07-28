@@ -12,46 +12,55 @@ using WebStore.Domain.ViewModels.Product;
 
 namespace WebStore.TagHelpers
 {
-    public class PagingTagHelper: TagHelper
+    public class PagingTagHelper : TagHelper
     {
-        private readonly IUrlHelperFactory urlHelperFactory;
+        private readonly IUrlHelperFactory _UrlHelperFactory;
+
         [ViewContext, HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
+
         public PageViewModel PageModel { get; set; }
+
         public string PageAction { get; set; }
-        [HtmlAttributeName(DictionaryAttributePrefix ="page-url-")]
+
+        [HtmlAttributeName(DictionaryAttributePrefix = "page-url-")]
         public Dictionary<string, object> PageUrlValues { get; set; } = new Dictionary<string, object>();
 
-        public PagingTagHelper(IUrlHelperFactory urlHelperFactory)
-        {
-            this.urlHelperFactory = urlHelperFactory;
-        }
+        public PagingTagHelper(IUrlHelperFactory UrlHelperFactory) => _UrlHelperFactory = UrlHelperFactory;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            var url_helper = urlHelperFactory.GetUrlHelper(ViewContext);
+            var url_helper = _UrlHelperFactory.GetUrlHelper(ViewContext);
+
             var ul = new TagBuilder("ul");
             ul.AddCssClass("pagination");
-            for (int i = 1; i < PageModel.TotalPages; i++)
-            {
+
+            for (var i = 1; i < PageModel.TotalPages; i++)
                 ul.InnerHtml.AppendHtml(CreateItem(i, url_helper));
-            }
+
             base.Process(context, output);
             output.Content.AppendHtml(ul);
         }
 
-        private TagBuilder CreateItem(int page_number, IUrlHelper url_helper)
+        private TagBuilder CreateItem(int PageNumber, IUrlHelper UrlHelper)
         {
             var li = new TagBuilder("li");
             var a = new TagBuilder("a");
-            if (page_number == PageModel.PageNumber)
+
+            if (PageNumber == PageModel.PageNumber)
+            {
+                a.MergeAttribute("data-page", PageModel.PageNumber.ToString());
                 li.AddCssClass("active");
+            }
             else
             {
-                PageUrlValues["pages"] = page_number;
-                a.Attributes["href"] = UrlHelper.Action(PageAction, PageUrlValues);
+                PageUrlValues["page"] = PageNumber;
+                a.Attributes["href"] = "#";
+                foreach (var (key, value) in PageUrlValues.Where(p => p.Value != null))
+                    a.MergeAttribute($"data-{key}", value.ToString());
             }
-            a.InnerHtml.AppendHtml(page_number.ToString());
+
+            a.InnerHtml.AppendHtml(PageNumber.ToString());
             li.InnerHtml.AppendHtml(a);
             return li;
         }
