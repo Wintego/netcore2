@@ -1,7 +1,7 @@
-﻿@model WebStore.ViewModels.CatalogViewModel
+﻿@model WebStore.Domain.ViewModels.Product.CatalogViewModel
 
 @{
-    Layout = "_LayoutBase";
+    Layout = "_Breadcrumbs";
 }
 
 <section id="advertisement">
@@ -19,6 +19,9 @@
 
             <div class="col-sm-9 padding-right">
                 @await Html.PartialAsync("Partial/_FeaturesItems", Model.Products)
+                <paging page-model="@Model.PageModel" page-action="Shop" page-url-SectionId="@Model.SectionId" page-url-BrandId="@Model.BrandId">
+
+                </paging>
             </div>
         </div>
     </div> 

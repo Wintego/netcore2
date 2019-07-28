@@ -1,4 +1,4 @@
-﻿@model OrderViewModel
+﻿@model WebStore.Domain.ViewModels.Order.OrderViewModel
 
     <form method="post" asp-antiforgery="true" asp-action="CheckOut" asp-controller="Cart" asp-area="">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -21,7 +21,7 @@
             {
                 var sum = (decimal)sum_info;
                 <ul>
-                    <li>Итого <span>@sum.ToString("C")</span></li>
+                    <li>Итого <span id="totalOrderSum">@sum.ToString("C")</span></li>
                 </ul>
                 if (sum > 0)
                 {
