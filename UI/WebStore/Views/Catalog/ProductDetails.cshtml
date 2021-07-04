@@ -1,8 +1,8 @@
-﻿@model ProductViewModel
+﻿@model WebStore.Domain.ViewModels.Product.ProductViewModel
 
 
 @{
-    Layout = "_LayoutBase";
+    Layout = "_Breadcrumbs";
     ViewData["Title"] = $"Купить {Model.Name}";
 }
 
@@ -40,7 +40,6 @@
                                     <a href=""><img src="~/images/product-details/similar2.jpg" alt=""></a>
                                     <a href=""><img src="~/images/product-details/similar3.jpg" alt=""></a>
                                 </div>
-
                             </div>
 
                             <!-- Controls -->

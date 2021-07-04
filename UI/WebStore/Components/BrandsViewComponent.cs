@@ -1,32 +1,32 @@
-﻿using WebStore.Infrastructure.Interfaces;
-using WebStore.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebStore.Domain.ViewModels.Product;
 using WebStore.Infrastructure.Map;
+using WebStore.Interfaces.Services;
 
 namespace WebStore.Components
 {
-    public class BrandsViewComponent: ViewComponent
+    public class BrandsViewComponent : ViewComponent
     {
         private readonly IProductData _ProductData;
-        public BrandsViewComponent(IProductData productData)
+
+        public BrandsViewComponent(IProductData ProductData) => _ProductData = ProductData;
+
+        public IViewComponentResult Invoke(string BrandId)
         {
-            _ProductData = productData;
-        }
-        public IViewComponentResult Invoke()
-        {
-            var brand = GetBrands();
-            return View(brand);
+            var brand_id = int.TryParse(BrandId, out var id) ? id : (int?)null;
+            return View(new BrandCompleteViewModel
+            {
+                Brands = GetBrands(),
+                CurrentBrandId = brand_id
+            });
         }
 
-        private IEnumerable<BrandViewModel> GetBrands()
-        {
-            var brands = _ProductData.GetBrands();
-            return brands.Select(brand => brand.CreateViewModel());
-        }
+        private IEnumerable<BrandViewModel> GetBrands() =>
+            _ProductData.GetBrands().Select(BrandViewModelMapper.CreateViewModel);
     }
 }
  
